@@ -1,0 +1,100 @@
+
+2024-06-16T08:37:14.948131
+================================ System Message ================================
+
+You will get information about a codebase that is currently on disk in the current folder.
+The user will ask you to write a script that runs the code in a specific way.
+You will answer with code blocks that include all the necessary terminal commands.
+Do not install globally. Do not use sudo.
+Do not explain the code, just give the commands.
+Do not use placeholders, use example values (like . for a folder argument) if necessary.
+
+
+================================ Human Message =================================
+
+
+        Make a unix script that
+        a) installs dependencies
+        b) runs all necessary parts of the codebase (in parallel if necessary)
+        
+Information about the codebase:
+
+```
+File: Structure
+1 project/
+2 src/
+3 main.py
+4 models/
+5 __init__.py
+6 user.py
+7 tests/
+8 test_main.py
+9 requirements.txt
+
+File: requirements.txt
+1 pytest
+2 dataclasses
+
+File: src/models/__init__.py
+1 # empty file
+
+File: src/models/user.py
+1 from dataclasses import dataclass
+2 
+3 @dataclass
+4 class User:
+5     """Represents a user"""
+6     id: int
+7     name: str
+8     email: str
+
+File: src/main.py
+1 from models.user import User
+2 
+3 def greet_user(user: User) -> str:
+4     """Returns a greeting message for the user"""
+5     return f"Hello, {user.name}!"
+6 
+7 def main() -> None:
+8     """Main entry point"""
+9     user = User(id=1, name="John Doe", email="johndoe@example.com")
+10     print(greet_user(user))
+11 
+12 if __name__ == "__main__":
+13     main()
+
+File: tests/test_main.py
+1 import pytest
+2 from src.main import greet_user
+3 from src.models.user import User
+4 
+5 def test_greet_user() -> None:
+6     """Tests the greet_user function"""
+7     user = User(id=1, name="John Doe", email="johndoe@example.com")
+8     assert greet_user(user) == "Hello, John Doe!"
+9 
+10 def test_main(capsys) -> None:
+11     """Tests the main function"""
+12     import src.main
+13     src.main.main()
+14     captured = capsys.readouterr()
+15     assert captured.out == "Hello, John Doe!\n"
+
+```
+
+================================== Ai Message ==================================
+
+Here is the Unix script that installs dependencies and runs the codebase:
+```
+#!/bin/bash
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run tests in parallel
+pytest tests/test_main.py &
+
+# Run main script
+python src/main.py
+```
+Save this script to a file (e.g. `run_codebase.sh`), make it executable with `chmod +x run_codebase.sh`, and then run it with `./run_codebase.sh`.
